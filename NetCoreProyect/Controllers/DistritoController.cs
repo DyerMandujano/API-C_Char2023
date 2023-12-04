@@ -43,7 +43,7 @@ namespace NetCoreProyect.Controllers
             return await query.ToListAsync();
         }
 
-        [HttpGet("/BuscarPorDistrito/{id}")]
+        [HttpGet("BuscarPorDistrito/{id}")]
         public async Task<ActionResult<SolicitudDistrito>> GetOneDistrito(int id)
         {
             //creamos la variable 'distritoExistente' para almacenar los valores del objeto dependiendo del id proporcionado en el parametro
@@ -83,6 +83,7 @@ namespace NetCoreProyect.Controllers
         }
 
         [HttpPost("CrearDistrito")]
+        //El body que le voy a enviar como parametro a este metodo va a ser un objeto de tipo 'SolicitudDistrito'
         public async Task<ActionResult> NuevoDistrito([FromBody] SolicitudDistrito solicitudDistrito)
         {
             if (solicitudDistrito == null)
@@ -118,6 +119,7 @@ namespace NetCoreProyect.Controllers
         }
 
         [HttpPut("ActualizarDistrito/{id}")]
+        //El body que le voy a enviar como parametro a este metodo va a ser un objeto de tipo 'SolicitudDistrito' y ademas un id
         public async Task<ActionResult> UpdateDistrito(int id, [FromBody] SolicitudDistrito solicitudDistrito)
         {
             if (solicitudDistrito == null)
@@ -126,6 +128,7 @@ namespace NetCoreProyect.Controllers
                 return BadRequest("La solicitud es nula");
             }
 
+            //creamos la variable 'distritoExistente' para almacenar los valores del objeto dependiendo del id proporcionado en el parametro
             var distritoExistente = await _DBContext.Distritos.FirstOrDefaultAsync(d => d.Iddist == id);
 
             if (distritoExistente == null)
@@ -134,7 +137,7 @@ namespace NetCoreProyect.Controllers
                 return NotFound("Distrito no encontrado");
             }
 
-            //Actualiza las propiedades del Distrito existente con los valores del obj 'solicitudDistrito'
+            //Actualiza las propiedades del objeto 'distritoExistente' con los valores del obj 'solicitudDistrito'
             distritoExistente.NomDist = solicitudDistrito.NomDist;
             distritoExistente.Estado = solicitudDistrito.Estado;
 
@@ -148,17 +151,21 @@ namespace NetCoreProyect.Controllers
         [HttpDelete("EliminarDistrito/{id}")]
         public async Task<ActionResult> DeleteDistrito(int id)
         {
+            //creamos la variable 'distritoExistente' para almacenar los valores del objeto dependiendo del id proporcionado en el parametro
             var distritoExistente = _DBContext.Distritos.FirstOrDefault(d => d.Iddist == id);
 
             if (distritoExistente == null)
             {
+                //Devolvemos una statusCode404 = NotFound
                 return NotFound("Distrito no encontrado");
             }
 
             // Elimina el Distrito de la BD
             distritoExistente.Estado = 0;
+            //Guardamos los cambias en la BD
             await _DBContext.SaveChangesAsync();
 
+            //Devolvemos una statusCode200 = Ok
             return Ok("Distrito eliminado exitosamente");
         }
 
