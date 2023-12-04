@@ -43,15 +43,56 @@ namespace NetCoreProyect.Controllers
             return await query.ToListAsync();
         }
 
+        [HttpGet("/BuscarPorDistrito/{id}")]
+        public async Task<ActionResult<SolicitudDistrito>> GetOneDistrito(int id)
+        {
+            //creamos la variable 'distritoExistente' para almacenar los valores del objeto dependiendo del id proporcionado en el parametro
+            var distritoExistente = await _DBContext.Distritos.FirstOrDefaultAsync(d => d.Iddist == id);
+
+            //SI NO ENCUENTRA EL DISTRITO
+            if (distritoExistente == null)
+            {
+                //Devolvemos una statusCode404 = NotFound
+                return NotFound("Distrito no encontrado");
+            }
+
+            //NOTA: PODEMOS INSTANCIAR DE DOS MANERAS LA CLASE 'SolicitudDistrito'
+            //1era Forma - Tradicional
+            //SolicitudDistrito soli_dist = new SolicitudDistrito();
+
+            //UNA VEZ QUE SE HAYA ENCONTRADO EL DISTRITO DESEADO POR EL PARAMETRO id, cada valor que tiene cada propiedad del objeto 'distritoExistente'(TRABAJA CON EL CONTEXTO DE LA DB DE SU MODELO 'Distrito')
+            //Se almacenará en las propiedades del objeto 'soli_dist'(TRABAJA CON LA ENTIDAD 'SolicitudDistrito')
+            //    ENTIDAD    -      MODELO
+            //
+            //soli_dist.Iddist = distritoExistente.Iddist;
+            //soli_dist.NomDist = distritoExistente.NomDist;
+            //soli_dist.Estado = distritoExistente.Estado;
+
+            //2da Forma - object initializer
+            //Aca se utiliza la inicialización de objeto en línea
+            SolicitudDistrito soli_dist = new()
+            {
+              //ENTIDAD    -      MODELO
+                Iddist = distritoExistente.Iddist,
+                NomDist = distritoExistente.NomDist,
+                Estado = distritoExistente.Estado,
+            };
+
+            return Ok(soli_dist);
+
+        }
+
         [HttpPost("CrearDistrito")]
         public async Task<ActionResult> NuevoDistrito([FromBody] SolicitudDistrito solicitudDistrito)
         {
             if (solicitudDistrito == null)
             {
+                // Devolvemos una statusCode400 = BadRequest
                 return BadRequest("La solicitud es nula");
             }
             else if(solicitudDistrito.NomDist == "" || solicitudDistrito.NomDist == null)
             {
+                // Devolvemos una statusCode400 = BadRequest
                 return BadRequest("Ingrese un Distrito");
             }
 
@@ -72,10 +113,54 @@ namespace NetCoreProyect.Controllers
             //para esperar a que esta operación se complete antes de continuar con el resto del codigo.
             await _DBContext.SaveChangesAsync();
 
-            // Devolvemos una statusCode200 = OK
+            //Devolvemos una statusCode200 = OK
             return Ok("Distrito creado exitosamente");
         }
 
-        
+        [HttpPut("ActualizarDistrito/{id}")]
+        public async Task<ActionResult> UpdateDistrito(int id, [FromBody] SolicitudDistrito solicitudDistrito)
+        {
+            if (solicitudDistrito == null)
+            {
+                //Devolvemos una statusCode400 = BadRequest
+                return BadRequest("La solicitud es nula");
+            }
+
+            var distritoExistente = await _DBContext.Distritos.FirstOrDefaultAsync(d => d.Iddist == id);
+
+            if (distritoExistente == null)
+            {
+                //Devolvemos una statusCode404 = NotFound
+                return NotFound("Distrito no encontrado");
+            }
+
+            //Actualiza las propiedades del Distrito existente con los valores del obj 'solicitudDistrito'
+            distritoExistente.NomDist = solicitudDistrito.NomDist;
+            distritoExistente.Estado = solicitudDistrito.Estado;
+
+            //Guarda los cambios en la BD
+            await _DBContext.SaveChangesAsync();
+
+            //Devolvemos una statusCode200 = Ok
+            return Ok("Distrito actualizado exitosamente");
+        }
+
+        [HttpDelete("EliminarDistrito/{id}")]
+        public async Task<ActionResult> DeleteDistrito(int id)
+        {
+            var distritoExistente = _DBContext.Distritos.FirstOrDefault(d => d.Iddist == id);
+
+            if (distritoExistente == null)
+            {
+                return NotFound("Distrito no encontrado");
+            }
+
+            // Elimina el Distrito de la BD
+            distritoExistente.Estado = 0;
+            await _DBContext.SaveChangesAsync();
+
+            return Ok("Distrito eliminado exitosamente");
+        }
+
     }
 }
