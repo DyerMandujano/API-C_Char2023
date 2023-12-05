@@ -78,6 +78,7 @@ namespace NetCoreProyect.Controllers
                 Estado = distritoExistente.Estado,
             };
 
+            //Retorna el objeto 'soli_dist' con el statusCode200 = OK
             return Ok(soli_dist);
 
         }

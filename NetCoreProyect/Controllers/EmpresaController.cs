@@ -31,15 +31,129 @@ namespace NetCoreProyect.Controllers
                         select new SolicitudEmpleado
                         {
                             IdEmpleado = e.Idemp,
+                            Idcargo = e.Idcargo,
+                            Iddist = e.Iddist,
                             NombreEmp = e.NomEmp,
+                            ApeEmp = e.ApeEmp,
+                            Direccion = e.Direccion,
+                            Telefono = e.Telefono,
+                            Correo  = e.Correo,
+                            Estado = e.Estado
                         };
 
             return query.ToList();
         }
 
-        
+        [HttpGet("BuscarPorEmpleado/{id}")]
+        public async Task<ActionResult<SolicitudEmpleado>> GetOneEmpleado(int id)
+        {
+            //creamos la variable 'distritoExistente' para almacenar los valores del objeto dependiendo del id proporcionado en el parametro
+            var empleExistente = await _DBContext.Empleados.FirstOrDefaultAsync(d => d.Idemp == id);
 
-       
+            //SI NO ENCUENTRA AL EMPLEADO
+            if (empleExistente == null)
+            {
+                //Devolvemos una statusCode404 = NotFound
+                return NotFound("Empleado no encontrado");
+            }
+
+            SolicitudEmpleado soli_emple = new()
+            {
+                IdEmpleado = empleExistente.Idemp,
+                Idcargo = empleExistente.Idcargo,
+                Iddist = empleExistente.Iddist,
+                NombreEmp = empleExistente.NomEmp,
+                ApeEmp = empleExistente.ApeEmp,
+                Direccion = empleExistente.Direccion,
+                Telefono = empleExistente.Telefono,
+                Correo = empleExistente.Correo,
+                Estado = empleExistente.Estado
+            };
+
+            //Retorna el objeto 'soli_emple' con el statusCode200 = OK
+            return Ok(soli_emple);
+        }
+
+        [HttpPost("CrearEmpleado")]
+        public async Task<ActionResult<SolicitudEmpleado>> NuevoEmpleado([FromBody] SolicitudEmpleado solicitudEmpleado)
+        {
+
+            if (solicitudEmpleado == null)
+            {
+                // Devolvemos una statusCode400 = BadRequest
+                return BadRequest("La solicitud es nula");
+            }
+
+            Empleado newEmpleado = new()
+            {
+                Idcargo = solicitudEmpleado.Idcargo,
+                Iddist = solicitudEmpleado.Iddist,
+                NomEmp = solicitudEmpleado.NombreEmp,
+                ApeEmp = solicitudEmpleado.ApeEmp,
+                Direccion = solicitudEmpleado.Direccion,
+                Telefono = solicitudEmpleado.Telefono,
+                Correo = solicitudEmpleado.Correo,
+                Estado = solicitudEmpleado.Estado
+            };
+
+            _DBContext.Empleados.Add(newEmpleado);
+            await _DBContext.SaveChangesAsync();
+
+            return Ok("Empleado creado exitosamente");
+
+        }
+
+        [HttpPut("ActualizarEmpleado/{id}")]
+        public async Task<ActionResult<SolicitudEmpleado>> UpdateEmpleado(int id, [FromBody] SolicitudEmpleado solicitudEmpleado)
+        {
+
+            if (solicitudEmpleado == null)
+            {
+                // Devolvemos una statusCode400 = BadRequest
+                return BadRequest("La solicitud es nula");
+            }
+
+            var empleExistente = await _DBContext.Empleados.FirstOrDefaultAsync(d => d.Idemp == id);
+
+            if (empleExistente == null)
+            {
+                //Devolvemos una statusCode404 = NotFound
+                return NotFound("Empleado no encontrado");
+            }
+
+            //ACtualizamos los datos 
+            empleExistente.Idcargo = solicitudEmpleado.Idcargo;
+            empleExistente.Iddist = solicitudEmpleado.Iddist;
+            empleExistente.NomEmp = solicitudEmpleado.NombreEmp;
+            empleExistente.ApeEmp = solicitudEmpleado.ApeEmp;
+            empleExistente.Direccion = solicitudEmpleado.Direccion;
+            empleExistente.Telefono = solicitudEmpleado.Telefono;
+            empleExistente.Direccion = solicitudEmpleado.Direccion;
+            empleExistente.Correo = solicitudEmpleado.Correo;
+            empleExistente.Estado = solicitudEmpleado.Estado;
+
+            await _DBContext.SaveChangesAsync();
+            return Ok("Empleado Actualizado exitosamente");
+
+        }
+
+        [HttpDelete("EliminarEmpleado/{id}")]
+        public async Task<ActionResult<SolicitudEmpleado>> DeleteEmpleado(int id)
+        {
+            var empleExistente = await _DBContext.Empleados.FirstOrDefaultAsync(d => d.Idemp == id);
+
+            if (empleExistente == null)
+            {
+                //Devolvemos una statusCode404 = NotFound
+                return NotFound("Empleado no encontrado");
+            }
+
+            empleExistente.Estado = 0;
+
+            await _DBContext.SaveChangesAsync();
+            return Ok("Empleado eliminado exitosamente");
+
+        }
 
     }
 }

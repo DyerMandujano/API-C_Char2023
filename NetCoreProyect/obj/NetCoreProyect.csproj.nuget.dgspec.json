@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "E:\\Cchar_ConCapas\\NetCoreProyect\\NetCoreProyect\\NetCoreProyect.csproj": {}
+    "E:\\Cchar_ConCapas\\API_Empresa\\API-C_Char2023\\NetCoreProyect\\NetCoreProyect.csproj": {}
   },
   "projects": {
-    "E:\\Cchar_ConCapas\\NetCoreProyect\\NetCoreProyect\\NetCoreProyect.csproj": {
+    "E:\\Cchar_ConCapas\\API_Empresa\\API-C_Char2023\\NetCoreProyect\\NetCoreProyect.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Cchar_ConCapas\\NetCoreProyect\\NetCoreProyect\\NetCoreProyect.csproj",
+        "projectUniqueName": "E:\\Cchar_ConCapas\\API_Empresa\\API-C_Char2023\\NetCoreProyect\\NetCoreProyect.csproj",
         "projectName": "NetCoreProyect",
-        "projectPath": "E:\\Cchar_ConCapas\\NetCoreProyect\\NetCoreProyect\\NetCoreProyect.csproj",
+        "projectPath": "E:\\Cchar_ConCapas\\API_Empresa\\API-C_Char2023\\NetCoreProyect\\NetCoreProyect.csproj",
         "packagesPath": "C:\\Users\\Usuario\\.nuget\\packages\\",
-        "outputPath": "E:\\Cchar_ConCapas\\NetCoreProyect\\NetCoreProyect\\obj\\",
+        "outputPath": "E:\\Cchar_ConCapas\\API_Empresa\\API-C_Char2023\\NetCoreProyect\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Usuario\\AppData\\Roaming\\NuGet\\NuGet.Config",
